@@ -123,7 +123,11 @@
 	}
 	
 	String optimization = ElementParameterParser.getValue(node, "__GROUP_OPTIMIZATION__");
+	
+	boolean usePartition = "true".equals(ElementParameterParser.getValue(node, "__USE_PARTITION__"));
 	String partitioner = ElementParameterParser.getValue(node, "__CUSTOM_PARTITIONER__");
+	
+	boolean increaseParallelism = "true".equals(ElementParameterParser.getValue(node, "__USE_INCREASE_PARALLELISM__"));
 	String parallelism = ElementParameterParser.getValue(node, "__INCREASE_PARALLELISM__");
 	
 	boolean useOptimization = false;
@@ -144,13 +148,13 @@
 <%
 	}
 	
-	if(partitioner!=null && !"".equals(partitioner) && !"\"\"".equals(partitioner)) {
+	if(usePartition && partitioner!=null && !"".equals(partitioner) && !"\"\"".equals(partitioner)) {
 %>
 		sb_<%=cid%>.append(" PARTITION BY ").append(<%=partitioner%>);
 <%
 	}
 	
-	if(parallelism!=null && !"".equals(parallelism) && !"\"\"".equals(parallelism)) {
+	if(increaseParallelism && parallelism!=null && !"".equals(parallelism) && !"\"\"".equals(parallelism)) {
 %>
 		sb_<%=cid%>.append(" PARALLEL ").append(<%=parallelism%>);
 <%
