@@ -176,7 +176,7 @@ imports="
 <%
 		} else {
 %>
-			bw_<%=cid%>.write("SET parquet.compression=<%=compression%>");
+			bw_<%=cid%>.write("SET parquet.compression=<%=compression%>;");
 <%
 		}
 	}
@@ -335,7 +335,7 @@ imports="
 <%
 	} else {
 %>
-		bw_<%=cid%>.write(querySQL_<%=cid %>);
+		bw_<%=cid%>.write(querySQL_<%=cid %> + ";");
 		globalMap.put("<%=cid%>_QUERY", querySQL_<%=cid %>);
 		
 		bw_<%=cid%>.close();
@@ -344,8 +344,8 @@ imports="
 			instance_<%=cid%>.setLibJars(libjars_<%=cid%>.toString().substring(0, libjars_<%=cid%>.length()-1));
 		}
 		instance_<%=cid%>.sendFiles();
-		instance_<%=cid%>.callWS(null);
-		int exitCode_<%=cid%> = instance_<%=cid%>.waitFor();
+		instance_<%=cid%>.callWS(null, true);
+		int exitCode_<%=cid%> = instance_<%=cid%>.execute();
 		if(exitCode_<%=cid%> > 0) {
 		
 <%
