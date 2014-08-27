@@ -33,10 +33,48 @@ imports="
 	
 	boolean isLog4jEnabled = ("true").equals(ElementParameterParser.getValue(node.getProcess(), "__LOG4J_ACTIVATE__"));
 	boolean isExecutedThroughWebHCat = "MICROSOFT_HD_INSIGHT".equals(ElementParameterParser.getValue(node, "__DISTRIBUTION__"));
+	if("true".equals(ElementParameterParser.getValue(node,"__USE_EXISTING_CONNECTION__"))) {
+		isExecutedThroughWebHCat = false;
+		String connection = ElementParameterParser.getValue(node, "__CONNECTION__");
+		for (INode pNode : node.getProcess().getNodesOfType("tHiveConnection")) {
+			if(connection!=null && connection.equals(pNode.getUniqueName())) {
+				isExecutedThroughWebHCat = "MICROSOFT_HD_INSIGHT".equals(ElementParameterParser.getValue(pNode, "__DISTRIBUTION__"));
+			}
+		}
+	}
+	
 	if(isExecutedThroughWebHCat) {
 %>
 		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Hive/GetAzureConnection.javajet"%>
+<%		
+		if("false".equals(useExistingConn)) { // This variable is declared and initialized in the GetAzureConnection.javajet	
+			boolean setMemory = "true".equals(ElementParameterParser.getValue(node, "__SET_MEMORY__"));
+			if(setMemory) {
+				String mapMemory = ElementParameterParser.getValue(node,"__MAPREDUCE_MAP_MEMORY_MB__");
+				String reduceMemory = ElementParameterParser.getValue(node,"__MAPREDUCE_REDUCE_MEMORY_MB__");
+				String amMemory = ElementParameterParser.getValue(node,"__YARN_APP_MAPREDUCE_AM_RESOURCE_MB__");
+%>
+				bw_<%=cid%>.write("SET mapreduce.map.memory.mb=" + <%=mapMemory%> + ";");
+				bw_<%=cid%>.write("SET mapreduce.reduce.memory.mb=" + <%=reduceMemory%> + ";");
+				bw_<%=cid%>.write("SET yarn.app.mapreduce.am.resource.mb=" + <%=amMemory%> + ";");
 <%
+			}
+	
+			List<Map<String, String>> advProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ADVANCED_PROPERTIES__");
+			if(advProps!=null) {
+				for(Map<String, String> item : advProps){
+%>
+					bw_<%=cid%>.write("SET "+<%=item.get("PROPERTY")%>+"="+<%=item.get("VALUE")%> + ";");
+<%
+				}
+			}
+%>
+			String dbname_<%=cid%> = <%=dbname%>;
+			if(dbname_<%=cid%>!=null && !"".equals(dbname_<%=cid%>.trim()) && !"default".equals(dbname_<%=cid%>.trim())) {
+				bw_<%=cid%>.write("use " + dbname_<%=cid%> + ";");
+			}
+<%
+		}
 	} else {
 %>
 		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Hive/GetConnection.javajet"%>
@@ -62,7 +100,7 @@ imports="
 	boolean setFsDefaultName = "true".equals(ElementParameterParser.getValue(node, "__SET_FS_DEFAULT_NAME__"));
 	String fsDefaultName = ElementParameterParser.getValue(node, "__FS_DEFAULT_NAME__");
 	
-	if(useExistingConnection) {
+	if(useExistingConnection && !isExecutedThroughWebHCat) {
 		distribution = "";
 		hiveVersion = "";
 		connectionMode = "";

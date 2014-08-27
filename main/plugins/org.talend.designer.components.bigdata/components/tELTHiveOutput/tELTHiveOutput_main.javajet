@@ -97,6 +97,15 @@ imports="
     	defineRegisterJar = ElementParameterParser.getValue(previousNode, "__DEFINE_REGISTER_JAR__");
     	registerJarForHBase = (List<Map<String, String>>)ElementParameterParser.getObjectValue(previousNode, "__REGISTER_JAR__");
     	isExecutedThroughWebHCat = "MICROSOFT_HD_INSIGHT".equals(ElementParameterParser.getValue(previousNode, "__DISTRIBUTION__"));
+		if("true".equals(ElementParameterParser.getValue(previousNode,"__USE_EXISTING_CONNECTION__"))) {
+			isExecutedThroughWebHCat = false;
+			String connection = ElementParameterParser.getValue(previousNode, "__CONNECTION__");
+			for (INode pNode : previousNode.getProcess().getNodesOfType("tHiveConnection")) {
+				if(connection!=null && connection.equals(pNode.getUniqueName())) {
+					isExecutedThroughWebHCat = "MICROSOFT_HD_INSIGHT".equals(ElementParameterParser.getValue(pNode, "__DISTRIBUTION__"));
+				}
+			}
+		}
 	}
 	
 	if(isExecutedThroughWebHCat) {
@@ -106,25 +115,33 @@ imports="
 		<%@ include file="@{org.talend.designer.components.localprovider}/components/templates/Hive/GetAzureConnection.javajet"%>
 <%
 		node = nodeBackup;
-		boolean setMemory = "true".equals(ElementParameterParser.getValue(previousNode, "__SET_MEMORY__"));
-		if(setMemory) {
-			String mapMemory = ElementParameterParser.getValue(previousNode,"__MAPREDUCE_MAP_MEMORY_MB__");
-			String reduceMemory = ElementParameterParser.getValue(previousNode,"__MAPREDUCE_REDUCE_MEMORY_MB__");
-			String amMemory = ElementParameterParser.getValue(previousNode,"__YARN_APP_MAPREDUCE_AM_RESOURCE_MB__");
+		if("false".equals(useExistingConn)) { // This variable is declared and initialized in the GetAzureConnection.javajet
+			boolean setMemory = "true".equals(ElementParameterParser.getValue(previousNode, "__SET_MEMORY__"));
+			if(setMemory) {
+				String mapMemory = ElementParameterParser.getValue(previousNode,"__MAPREDUCE_MAP_MEMORY_MB__");
+				String reduceMemory = ElementParameterParser.getValue(previousNode,"__MAPREDUCE_REDUCE_MEMORY_MB__");
+				String amMemory = ElementParameterParser.getValue(previousNode,"__YARN_APP_MAPREDUCE_AM_RESOURCE_MB__");
 %>
-			bw_<%=cid%>.write("SET mapreduce.map.memory.mb=" + <%=mapMemory%> + ";");
-			bw_<%=cid%>.write("SET mapreduce.reduce.memory.mb=" + <%=reduceMemory%> + ";");
-			bw_<%=cid%>.write("SET yarn.app.mapreduce.am.resource.mb=" + <%=amMemory%> + ";");
-<%
-		}
-		
-		List<Map<String, String>> advProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(previousNode, "__ADVANCED_PROPERTIES__");
-		if(advProps!=null) {
-			for(Map<String, String> item : advProps){
-%>
-				bw_<%=cid%>.write("SET "+<%=item.get("PROPERTY")%>+"="+<%=item.get("VALUE")%> + ";");
+				bw_<%=cid%>.write("SET mapreduce.map.memory.mb=" + <%=mapMemory%> + ";");
+				bw_<%=cid%>.write("SET mapreduce.reduce.memory.mb=" + <%=reduceMemory%> + ";");
+				bw_<%=cid%>.write("SET yarn.app.mapreduce.am.resource.mb=" + <%=amMemory%> + ";");
 <%
 			}
+		
+			List<Map<String, String>> advProps = (List<Map<String,String>>)ElementParameterParser.getObjectValue(previousNode, "__ADVANCED_PROPERTIES__");
+			if(advProps!=null) {
+				for(Map<String, String> item : advProps){
+%>
+					bw_<%=cid%>.write("SET "+<%=item.get("PROPERTY")%>+"="+<%=item.get("VALUE")%> + ";");
+<%
+				}
+			}
+%>
+			String dbname_<%=cid%> = <%=dbname%>;
+			if(dbname_<%=cid%>!=null && !"".equals(dbname_<%=cid%>.trim()) && !"default".equals(dbname_<%=cid%>.trim())) {
+				bw_<%=cid%>.write("use " + dbname_<%=cid%> + ";");
+			}
+<%
 		}		
 	} else {
 		boolean useExistingConn = ("true").equals(ElementParameterParser.getValue(previousNode, "__USE_EXISTING_CONNECTION__"));   
