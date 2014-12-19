@@ -50,6 +50,7 @@ import org.talend.repository.nosql.i18n.Messages;
 import org.talend.repository.nosql.ui.common.AbstractNoSQLConnForm;
 import org.talend.repository.nosql.validator.NonemptyValidator;
 import org.talend.repository.nosql.validator.SpecialValueValidator;
+import org.talend.repository.ui.utils.ExtendedNodeConnectionContextUtils.ENoSQLParamName;
 import org.talend.utils.json.JSONArray;
 import org.talend.utils.json.JSONException;
 import org.talend.utils.json.JSONObject;
@@ -129,6 +130,11 @@ public class MongoDBConnForm extends AbstractNoSQLConnForm {
         if (checkRequireAuthBtn.getSelection()) {
             userText.setText(user == null ? "" : user); //$NON-NLS-1$
             pwdText.setText(passwd == null ? "" : passwd); //$NON-NLS-1$
+            if (isContextMode()) {
+                pwdText.getTextControl().setEchoChar('\0');
+            } else {
+                pwdText.getTextControl().setEchoChar('*');
+            }
         }
         updateReplicaField();
         updateAuthGroup();
@@ -454,4 +460,27 @@ public class MongoDBConnForm extends AbstractNoSQLConnForm {
         connectionGroup.getParent().layout();
     }
 
+    @Override
+    protected void collectConParameters() {
+        addContextParams(ENoSQLParamName.Server, true);
+        addContextParams(ENoSQLParamName.Port, true);
+        addContextParams(ENoSQLParamName.Database, true);
+        collectAuthParams(checkRequireAuthBtn.getSelection());
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.nosql.ui.common.AbstractNoSQLConnForm#collectAttributesForContext()
+     */
+    @Override
+    protected void collectNoSqlAttributesForContext() {
+        getConnection().getAttributes().put(INoSQLCommonAttributes.HOST, serverText.getText());
+        getConnection().getAttributes().put(INoSQLCommonAttributes.PORT, portText.getText());
+        getConnection().getAttributes().put(INoSQLCommonAttributes.DATABASE, databaseText.getText());
+        if (checkRequireAuthBtn.getSelection()) {
+            getConnection().getAttributes().put(INoSQLCommonAttributes.USERNAME, userText.getText());
+            getConnection().getAttributes().put(INoSQLCommonAttributes.PASSWORD, pwdText.getText());
+        }
+    }
 }

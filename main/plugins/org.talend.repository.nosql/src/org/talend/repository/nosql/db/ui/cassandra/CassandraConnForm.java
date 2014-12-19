@@ -43,6 +43,7 @@ import org.talend.repository.nosql.i18n.Messages;
 import org.talend.repository.nosql.ui.common.AbstractNoSQLConnForm;
 import org.talend.repository.nosql.validator.NonemptyValidator;
 import org.talend.repository.nosql.validator.SpecialValueValidator;
+import org.talend.repository.ui.utils.ExtendedNodeConnectionContextUtils.ENoSQLParamName;
 
 public class CassandraConnForm extends AbstractNoSQLConnForm {
 
@@ -99,6 +100,11 @@ public class CassandraConnForm extends AbstractNoSQLConnForm {
         if (checkRequireAuthBtn.getSelection()) {
             userText.setText(user == null ? "" : user); //$NON-NLS-1$
             pwdText.setText(passwd == null ? "" : passwd); //$NON-NLS-1$
+            if (isContextMode()) {
+                pwdText.getTextControl().setEchoChar('\0');
+            } else {
+                pwdText.getTextControl().setEchoChar('*');
+            }
         }
         updateAuthGroup();
     }
@@ -331,4 +337,35 @@ public class CassandraConnForm extends AbstractNoSQLConnForm {
             throw new NoSQLGeneralException(e);
         }
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.nosql.ui.common.AbstractNoSQLConnForm#collectConParameters()
+     */
+    @Override
+    protected void collectConParameters() {
+        addContextParams(ENoSQLParamName.Server, true);
+        addContextParams(ENoSQLParamName.Port, true);
+        addContextParams(ENoSQLParamName.Keyspace, true);
+        collectAuthParams(checkRequireAuthBtn.getSelection());
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.nosql.ui.common.AbstractNoSQLConnForm#collectAttributesForContext()
+     */
+    @Override
+    protected void collectNoSqlAttributesForContext() {
+        NoSQLConnection conn = getConnection();
+        conn.getAttributes().put(INoSQLCommonAttributes.HOST, serverText.getText());
+        conn.getAttributes().put(INoSQLCommonAttributes.PORT, portText.getText());
+        conn.getAttributes().put(INoSQLCommonAttributes.DATABASE, databaseText.getText());
+        if (checkRequireAuthBtn.getSelection()) {
+            conn.getAttributes().put(INoSQLCommonAttributes.USERNAME, userText.getText());
+            conn.getAttributes().put(INoSQLCommonAttributes.PASSWORD, pwdText.getText());
+        }
+    }
+
 }
