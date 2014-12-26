@@ -167,6 +167,14 @@
             dbWizPageProvider="org.talend.repository.nosql.db.provider.neo4j.Neo4jWizardPageProvider"
             description="Neo4j">
       </factory>
+      <factory
+            dbDNDProvider="org.talend.repository.nosql.db.provider.couchdb.CouchDBDNDProvider"
+            dbMetadataProvider="org.talend.repository.nosql.db.provider.couchdb.CouchDBMetadataProvider"
+            dbType="COUCHDB"
+            dbVersions="COUCHDB_1_0_2"
+            dbWizPageProvider="org.talend.repository.nosql.db.provider.couchdb.CouchDBWizardPageProvider"
+            description="CouchDB">
+      </factory>
    </extension>
    <extension
          point="org.talend.core.runtime.classloader_provider">
@@ -209,6 +217,10 @@
       <classloader
             index="NOSQL:NEO4J:NEO4J_1_X_X"
             libraries="geronimo-jta_1.1_spec-1.1.1.jar;lucene-core-3.5.0.jar;neo4j-cypher-1.9.M01.jar;neo4j-graph-algo-1.9.M01.jar;neo4j-graph-matching-1.9.M01.jar;neo4j-jmx-1.9.M01.jar;neo4j-kernel-1.9.M01.jar;neo4j-lucene-index-1.9.M01.jar;neo4j-shell-1.9.M01.jar;neo4j-udc-1.9.M01.jar;org.apache.servicemix.bundles.jline-0.9.94_1.jar;scala-library-2.9.1-1.jar;server-api-1.9.M01.jar;concurrentlinkedhashmap-lru-1.3.1.jar;neo4j-rest-graphdb-1.8.1.jar;jsr311-api-1.1.2.r612.jar;jersey-core-1.4.jar;jersey-client-1.4.jar;jackson-mapper-asl-1.9.7.jar;jackson-jaxrs-1.9.7.jar;jackson-core-asl-1.9.7.jar">
+      </classloader>
+      <classloader
+            index="NOSQL:COUCHDB:COUCHDB_1_0_2"
+            libraries="lightcouch-0.0.6.jar;httpcore-4.2.4.jar;httpclient-4.2.5.jar;gson-2.2.4.jar;commons-logging-1.1.1.jar;commons-codec-1.6.jar">
       </classloader>
    </extension>
    <extension
