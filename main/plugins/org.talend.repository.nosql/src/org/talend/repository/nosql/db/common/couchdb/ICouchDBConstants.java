@@ -24,9 +24,19 @@ public interface ICouchDBConstants {
 
     public static final String REPLICATE_TARGET_DB_NAME_DEFAULT = "newLine"; //$NON-NLS-1$
 
+    public static final String RETRIEVE_SCHEMA_OPTIONS_PARAMETER_DEFAULT = "newLine"; //$NON-NLS-1$
+
+    public static final String RETRIEVE_SCHEMA_OPTIONS_VALUE_DEFAULT = ""; //$NON-NLS-1$
+
     public static final Boolean REPLICATE_CONTINUOUS_DEFAULT = true;
 
     public static final Boolean REPLICATE_CREATE_TARGET_DEFAULT = true;
 
     public static final Boolean REPLICATE_CANCEL_REPLICATE_DEFAULT = false;
+
+    public static final String COUCHDB_SCHEMA = "COUCHDB_SCHEMA"; //$NON-NLS-1$
+
+    public static final Boolean INCLUDE_DOCS_DEFAULT = true;
+
+    public static final Integer COUCHDB_RETRIEVE_LIMIT_DEFAULT = 1000;
 }

@@ -32,4 +32,35 @@ public interface ICouchDBAttributes extends INoSQLCommonAttributes {
 
     public static final String CANCEL_REPLICATE = "CANCEL_REPLICATE"; //$NON-NLS-1$
 
+    public static final String PARAMETER = "PARAMETER"; //$NON-NLS-1$
+
+    public static final String VALUE = "VALUE"; //$NON-NLS-1$
+
+    public static final String QUERY_BY_VIEW = "QUERY_BY_VIEW"; //$NON-NLS-1$
+
+    public static final String DOC = "DOC"; //$NON-NLS-1$
+
+    public static final String VIEW = "VIEW"; //$NON-NLS-1$
+
+    public static final String STARTKEY = "STARTKEY"; //$NON-NLS-1$
+
+    public static final String ENDKEY = "ENDKEY"; //$NON-NLS-1$
+
+    public static final String STARTKEY_DOCID = "STARTKEY_DOCID"; //$NON-NLS-1$
+
+    public static final String ENDKEY_DOCID = "ENDKEY_DOCID"; //$NON-NLS-1$
+
+    public static final String ISREDUCE = "ISREDUCE"; //$NON-NLS-1$
+
+    public static final String INCLUDE_DOCS = "INCLUDE_DOCS"; //$NON-NLS-1$
+
+    public static final String DESCENDING = "DESCENDING"; //$NON-NLS-1$
+
+    public static final String GROUP = "GROUP"; //$NON-NLS-1$
+
+    public static final String GROUP_LEVEL = "GROUP_LEVEL"; //$NON-NLS-1$
+
+    public static final String ADD_OPTION = "ADD_OPTION"; //$NON-NLS-1$
+
+    public static final String OPTIONS = "OPTIONS"; //$NON-NLS-1$
 }

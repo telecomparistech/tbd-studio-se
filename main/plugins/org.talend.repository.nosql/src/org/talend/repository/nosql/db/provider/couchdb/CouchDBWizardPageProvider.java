@@ -14,9 +14,14 @@ package org.talend.repository.nosql.db.provider.couchdb;
 
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.nosql.db.ui.couchdb.CouchDBConnForm;
+import org.talend.repository.nosql.db.ui.couchdb.CouchDBRetrieveSchemaForm;
+import org.talend.repository.nosql.db.ui.couchdb.CouchDBSchemaForm;
 import org.talend.repository.nosql.ui.common.AbstractNoSQLConnForm;
+import org.talend.repository.nosql.ui.common.AbstractNoSQLRetrieveSchemaForm;
+import org.talend.repository.nosql.ui.common.AbstractNoSQLSchemaForm;
 import org.talend.repository.nosql.ui.provider.AbstractWizardPageProvider;
 
 /**
@@ -37,6 +42,34 @@ public class CouchDBWizardPageProvider extends AbstractWizardPageProvider {
     public AbstractNoSQLConnForm createConnectionForm(Composite parent, ConnectionItem connectionItem, String[] existingNames,
             boolean creation, WizardPage parentWizardPage) {
         return new CouchDBConnForm(parent, connectionItem, existingNames, creation, parentWizardPage);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.nosql.ui.provider.IWizardPageProvider#createRetrieveSchemaForm(org.eclipse.swt.widgets.
+     * Composite, org.talend.core.model.properties.ConnectionItem, org.talend.repository.model.nosql.NoSQLConnection,
+     * org.eclipse.jface.wizard.WizardPage)
+     */
+    @Override
+    public AbstractNoSQLRetrieveSchemaForm createRetrieveSchemaForm(Composite parent, ConnectionItem connItem, boolean creation,
+            WizardPage parentWizardPage) {
+        return new CouchDBRetrieveSchemaForm(parent, connItem, null, creation, parentWizardPage);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.talend.repository.nosql.ui.provider.IWizardPageProvider#createSchemaForm(org.eclipse.swt.widgets.Composite,
+     * org.talend.core.model.properties.ConnectionItem, org.talend.repository.model.nosql.NoSQLConnection,
+     * org.talend.core.model.metadata.builder.connection.MetadataTable, org.eclipse.jface.wizard.IWizardPage)
+     */
+    @Override
+    public AbstractNoSQLSchemaForm createSchemaForm(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
+            boolean creation, WizardPage parentWizardPage) {
+        return new CouchDBSchemaForm(parent, connectionItem, metadataTable, creation, parentWizardPage);
     }
 
 }
