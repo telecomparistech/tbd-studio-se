@@ -43,8 +43,8 @@ import org.talend.repository.model.nosql.NoSQLConnection;
 import org.talend.repository.nosql.constants.INoSQLCommonAttributes;
 import org.talend.repository.nosql.db.common.couchdb.ICouchDBAttributes;
 import org.talend.repository.nosql.db.common.couchdb.ICouchDBConstants;
-import org.talend.repository.nosql.db.model.couchdb.CouchDBReplicateFieldModel;
-import org.talend.repository.nosql.db.util.couchdb.CouchDBConnectionUtil;
+import org.talend.repository.nosql.db.model.couchdb.CouchDBJSONFieldModel;
+import org.talend.repository.nosql.db.util.couchdb.CouchDBConnector;
 import org.talend.repository.nosql.exceptions.NoSQLGeneralException;
 import org.talend.repository.nosql.factory.NoSQLRepositoryFactory;
 import org.talend.repository.nosql.i18n.Messages;
@@ -87,7 +87,7 @@ public class CouchDBConnForm extends AbstractNoSQLConnForm {
 
     protected Composite replicationComposite;
 
-    protected List<Map<String, Object>> replicateList = new ArrayList<Map<String, Object>>();;
+    protected List<Map<String, Object>> replicateList = new ArrayList<Map<String, Object>>();
 
     protected CouchDBReplicateTableView replicateTableView;
 
@@ -200,7 +200,7 @@ public class CouchDBConnForm extends AbstractNoSQLConnForm {
 
     private void initReplicateField() {
         String replication = getConnection().getAttributes().get(ICouchDBAttributes.REPLICATE_TARGET_DB);
-        replicateList = CouchDBConnectionUtil.getReplicationDBs(replication);
+        replicateList = CouchDBConnector.getReplicationDBs(replication);
     }
 
     /*
@@ -336,7 +336,6 @@ public class CouchDBConnForm extends AbstractNoSQLConnForm {
     @Override
     public void releaseResources() throws NoSQLGeneralException {
         super.releaseResources();
-        // TODO
     }
 
     @Override
@@ -354,7 +353,7 @@ public class CouchDBConnForm extends AbstractNoSQLConnForm {
 
     protected void saveReplicateModel() {
         try {
-            CouchDBReplicateFieldModel model = (CouchDBReplicateFieldModel) replicateTableView.getExtendedTableModel();
+            CouchDBJSONFieldModel model = (CouchDBJSONFieldModel) replicateTableView.getExtendedTableModel();
             getConnection().getAttributes().put(ICouchDBAttributes.REPLICATE_TARGET_DB, model.getBeanListString());
         } catch (JSONException e) {
             // nothing to do
@@ -444,7 +443,7 @@ public class CouchDBConnForm extends AbstractNoSQLConnForm {
         replicateLayout.marginHeight = 0;
         replicationComposite.setLayout(replicateLayout);
 
-        CouchDBReplicateFieldModel model = new CouchDBReplicateFieldModel(replicateList,
+        CouchDBJSONFieldModel model = new CouchDBJSONFieldModel(replicateList,
                 Messages.getString("CouchDBConnForm.replicateView")); //$NON-NLS-1$
         replicateTableView = new CouchDBReplicateTableView(model, replicationComposite);
         Composite fieldTableEditorComposite = replicateTableView.getMainComposite();

@@ -27,14 +27,14 @@ import org.talend.utils.json.JSONObject;
  * created by cmeng on Dec 25, 2014 Detailled comment
  *
  */
-public class CouchDBReplicateFieldModel extends ExtendedTableModel<Map<String, Object>> {
+public class CouchDBJSONFieldModel extends ExtendedTableModel<Map<String, Object>> {
 
-    public CouchDBReplicateFieldModel(String name) {
+    public CouchDBJSONFieldModel(String name) {
         super(name);
         setProperties(new ArrayList<Map<String, Object>>());
     }
 
-    public CouchDBReplicateFieldModel(List<Map<String, Object>> replicaList, String name) {
+    public CouchDBJSONFieldModel(List<Map<String, Object>> replicaList, String name) {
         super(name);
         setProperties(replicaList);
     }

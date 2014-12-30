@@ -38,7 +38,7 @@ import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorCont
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.repository.nosql.db.common.couchdb.ICouchDBAttributes;
 import org.talend.repository.nosql.db.common.couchdb.ICouchDBConstants;
-import org.talend.repository.nosql.db.model.couchdb.CouchDBReplicateFieldModel;
+import org.talend.repository.nosql.db.model.couchdb.CouchDBJSONFieldModel;
 import org.talend.repository.nosql.i18n.Messages;
 
 /**
@@ -47,7 +47,7 @@ import org.talend.repository.nosql.i18n.Messages;
  */
 public class CouchDBReplicateTableView extends AbstractDataTableEditorView<Map<String, Object>> {
 
-    public CouchDBReplicateTableView(CouchDBReplicateFieldModel model, Composite parent) {
+    public CouchDBReplicateTableView(CouchDBJSONFieldModel model, Composite parent) {
         super(parent, SWT.NONE, model);
     }
 
@@ -99,7 +99,7 @@ public class CouchDBReplicateTableView extends AbstractDataTableEditorView<Map<S
                             public List<Map<String, Object>> createPastableBeansList(ExtendedTableModel extendedTableModel,
                                     List copiedObjectsList) {
                                 List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-                                CouchDBReplicateFieldModel fieldsModel = (CouchDBReplicateFieldModel) extendedTableModel;
+                                CouchDBJSONFieldModel fieldsModel = (CouchDBJSONFieldModel) extendedTableModel;
                                 for (Object current : copiedObjectsList) {
                                     if (current instanceof HashMap) {
                                         Map<String, Object> original = (Map<String, Object>) current;
@@ -118,8 +118,8 @@ public class CouchDBReplicateTableView extends AbstractDataTableEditorView<Map<S
         };
     }
 
-    public CouchDBReplicateFieldModel getModel() {
-        return (CouchDBReplicateFieldModel) getExtendedTableModel();
+    public CouchDBJSONFieldModel getModel() {
+        return (CouchDBJSONFieldModel) getExtendedTableModel();
     }
 
     protected TableViewerCreatorColumn<Map<String, Object>, String> createTargetDBNameColumn(
@@ -133,7 +133,7 @@ public class CouchDBReplicateTableView extends AbstractDataTableEditorView<Map<S
             public String get(Map<String, Object> bean) {
                 Object obj = bean.get(ICouchDBAttributes.TARGET_DB_NAME);
                 if (obj != null) {
-                    return (String) bean.get(ICouchDBAttributes.TARGET_DB_NAME);
+                    return (String) obj;
                 } else {
                     return ""; //$NON-NLS-1$
                 }
