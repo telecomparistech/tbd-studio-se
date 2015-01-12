@@ -37,6 +37,7 @@ import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.repository.model.nosql.NoSQLConnection;
 import org.talend.repository.nosql.constants.INoSQLCommonAttributes;
 import org.talend.repository.nosql.db.common.mongodb.IMongoConstants;
@@ -130,11 +131,6 @@ public class MongoDBConnForm extends AbstractNoSQLConnForm {
         if (checkRequireAuthBtn.getSelection()) {
             userText.setText(user == null ? "" : user); //$NON-NLS-1$
             pwdText.setText(passwd == null ? "" : passwd); //$NON-NLS-1$
-            if (isContextMode()) {
-                pwdText.getTextControl().setEchoChar('\0');
-            } else {
-                pwdText.getTextControl().setEchoChar('*');
-            }
         }
         updateReplicaField();
         updateAuthGroup();
@@ -278,6 +274,7 @@ public class MongoDBConnForm extends AbstractNoSQLConnForm {
         userText = new LabelledText(authGroup, Messages.getString("MongoDBConnForm.username"), 1); //$NON-NLS-1$
         pwdText = new LabelledText(authGroup,
                 Messages.getString("MongoDBConnForm.password"), 1, SWT.PASSWORD | SWT.BORDER | SWT.SINGLE); //$NON-NLS-1$
+        pwdText.getTextControl().setEchoChar('*');
     }
 
     /**
@@ -288,9 +285,13 @@ public class MongoDBConnForm extends AbstractNoSQLConnForm {
             boolean selection = checkRequireAuthBtn.getSelection();
             userText.setEditable(selection);
             pwdText.setEditable(selection);
+            pwdText.getTextControl().setEchoChar('*');
         } else {
             userText.setEditable(false);
             pwdText.setEditable(false);
+            if (pwdText.getText().startsWith(ContextParameterUtils.JAVA_NEW_CONTEXT_PREFIX)) {
+                pwdText.getTextControl().setEchoChar('\0');
+            }
         }
     }
 

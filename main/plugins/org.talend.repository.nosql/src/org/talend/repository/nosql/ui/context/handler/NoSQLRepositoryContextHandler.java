@@ -164,10 +164,10 @@ public class NoSQLRepositoryContextHandler implements IRepositoryContextHandler 
         }
         if (connection instanceof NoSQLConnection) {
             NoSQLConnection noSqlConn = (NoSQLConnection) connection;
-            String noSqlVariableName = null;
             ContextItem currentContext = null;
             for (IConnParamName param : paramSet) {
                 if (param instanceof ENoSQLParamName) {
+                    String noSqlVariableName = null;
                     ENoSQLParamName noSqlParam = (ENoSQLParamName) param;
                     if (adaptMap != null && adaptMap.size() > 0) {
                         for (Map.Entry<ContextItem, List<ConectionAdaptContextVariableModel>> entry : adaptMap.entrySet()) {
@@ -181,8 +181,10 @@ public class NoSQLRepositoryContextHandler implements IRepositoryContextHandler 
                             }
                         }
                     }
-                    noSqlVariableName = getCorrectVariableName(currentContext, noSqlVariableName, noSqlParam);
-                    matchContextForAttribues(noSqlConn, noSqlParam, noSqlVariableName);
+                    if (noSqlVariableName != null) {
+                        noSqlVariableName = getCorrectVariableName(currentContext, noSqlVariableName, noSqlParam);
+                        matchContextForAttribues(noSqlConn, noSqlParam, noSqlVariableName);
+                    }
                 }
 
             }
